@@ -1,9 +1,7 @@
 from database import Crypto, Database
+from apicoin import ApiCoinMarkt as api
 
 
-if __name__ == '__main__':
-    db = Database()
-
-    list = db.get_all_crypto()
-
-    db.remove_crypto(5)
+if __name__ == "__main__":
+    a = api()
+    a.get_quote()

@@ -1,0 +1,2 @@
+https://pro-api.coinmarketcap.com/v1/cryptocurrency/listings/latest
+{'status': {'timestamp': '2021-10-06T20:57:22.049Z', 'error_code': 400, 'error_message': '"sort" must be one of [name, symbol, date_added, market_cap, market_cap_strict, price, circulating_supply, total_supply, max_supply, num_market_pairs, volume_24h, percent_change_1h, percent_change_24h, percent_change_7d, market_cap_by_total_supply_strict, volume_7d, volume_30d]', 'elapsed': 0, 'credit_count': 0}}
