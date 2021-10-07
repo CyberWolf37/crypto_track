@@ -1,0 +1,73 @@
+body {
+  background: #100f0f;
+}
+
+span {
+  color: #efefef;
+  font-size: 24px;
+  font-family: Roboto;
+}
+
+.cercle-add {
+  width: 50px;
+  height: 50px;
+  margin: 10px;
+  background: #efefef;
+  border-radius: 50%;
+  border-style: solid;
+  border-color: #1fc36c;
+}
+
+.cercle-icon {
+  width: 68px;
+  height: 68px;
+  color: #100f0f;
+}
+
+.btn-edit {
+  width: 100px;
+  background: #efefef;
+  height: 50px;
+  border-radius: 70px;
+  margin: 10px;
+  border-style: solid;
+  border-color: #1fc36c;
+}
+
+.head-icon {
+  width: 40px;
+  height: 40px;
+  margin: 10px;
+  color: #1fc36c;
+}
+
+.line-transaction {
+  width: 250px;
+  border-bottom: 1px solid #efefef;
+  margin: 10px;
+}
+
+.dropdown {
+  width: 250px;
+  height: 40px;
+  background: #100f0f;
+}
+
+.btn {
+  width: 250px;
+  height: 40px;
+  background: #100f0f;
+  border-style: solid;
+  border-color: #1fc36c;
+}
+
+.input-qty {
+  background: #100f0f;
+  margin-top: 40px;
+  color: #efefef;
+  text-align: center;
+  font-family: Roboto;
+  border-style: solid;
+  border-color: #1fc36c;
+}
+
