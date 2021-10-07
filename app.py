@@ -8,3 +8,4 @@ if __name__ == "__main__":
     db = Database()
     a = api(db)
     a.get_quote()
+    #a.get_plot_by_name('ETH')

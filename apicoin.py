@@ -1,6 +1,7 @@
 import requests
 from database import Database, Crypto_quote
 from datetime import datetime
+import matplotlib.pyplot as plt
 import os 
 from  dotenv import load_dotenv
 from requests import Request, Session
@@ -45,3 +46,10 @@ class ApiCoinMarkt() :
             
         except (ConnectionError, Timeout, TooManyRedirects) as e:
             print(e)
+
+    def get_plot_by_name(self,name) :
+        prices = self.db.get_all_crypto_price_by_name(name)
+        print(prices)
+        #plot = plt.plot(prices,ylabel='Prix',xlabel='Date')
+
+        #return plot

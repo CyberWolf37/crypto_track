@@ -83,6 +83,15 @@ class Database() :
         except :
             print("oops an error occurred in function get_all_crypto_by_name")
 
+    def get_all_crypto_price_by_name(self,name) -> List[str] :
+        try :
+            crypto_list = self.connection.execute("SELECT crypto_price FROM crypto_quote WHERE crypto_name='%s'" %name)
+            crypto_list = crypto_list.fetchall()
+
+            return crypto_list
+        except :
+            print("oops an error occurred in function get_all_crypto_price_by_name")
+
     def insert_crypto(self, crypto: Crypto) :
         try:
             query = """INSERT INTO crypto_track(crypto_name, crypto_price, crypto_many) VALUES(?,?,?)"""
