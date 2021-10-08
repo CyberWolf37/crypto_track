@@ -1,19 +1,27 @@
 from  dotenv import load_dotenv
+import traceback
+import sys
+from itertools import chain
 from typing import List
 import sqlite3
 import os
 from datetime import datetime
 
 class Crypto() :
-    def __init__(self ,name, price, how_many, when = None, id = None) :
+    def __init__(self ,crypto_id ,price, how_many, when = datetime.now(), id = None) :
         self.id = id
-        self.name = name
+        self.crypto_id = crypto_id
         self.price = price
         self.how_many = how_many
-        if when != None :
-            when: datetime.now()
-        else:
-            when = when
+        self.when = when
+
+class Crypto_full() :
+    def __init__(self ,symbol ,crypto_name ,price ,how_many, when) :
+        self.symbol = symbol
+        self.name = crypto_name
+        self.price = price
+        self.how_many = how_many
+        self.when = when
 
 class Crypto_quote() :
     def __init__(self ,name, price, when) :
@@ -34,23 +42,33 @@ class Database() :
 
     def initiation(self) :
         try :
+            self.connection.execute("CREATE TABLE IF NOT EXISTS crypto\
+                (\
+                    id INTEGER NOT NULL UNIQUE,\
+                    crypto_symbol VARCHAR(20) NOT NULL,\
+                    crypto_label VARCHAR(50) NOT NULL,\
+                    PRIMARY KEY(\"id\" AUTOINCREMENT)\
+                )")
+            self.connection.commit()
             self.connection.execute("CREATE TABLE IF NOT EXISTS crypto_track\
                 (\
                     id INTEGER NOT NULL UNIQUE,\
-                    crypto_name VARCHAR(20) NOT NULL,\
+                    crypto_id INTEGER NOT NULL,\
                     crypto_price FLOAT NOT NULL,\
                     crypto_many FLOAT NOT NULL,\
                     crypto_when DATETIME NOT NULL,\
                     PRIMARY KEY(\"id\" AUTOINCREMENT)\
+                    FOREIGN KEY(crypto_id) REFERENCES crypto(id)\
                 )")
             self.connection.commit()
             self.connection.execute("CREATE TABLE IF NOT EXISTS crypto_quote\
                 (\
                     id INTEGER NOT NULL UNIQUE,\
-                    crypto_name VARCHAR(20) NOT NULL,\
+                    crypto_id INTEGER NOT NULL,\
                     crypto_price FLOAT NOT NULL,\
                     crypto_when DATETIME NOT NULL,\
                     PRIMARY KEY(\"id\" AUTOINCREMENT)\
+                    FOREIGN KEY(crypto_id) REFERENCES crypto(id)\
                 )")
             self.connection.commit()
         except :
@@ -63,12 +81,36 @@ class Database() :
             crypto_list_obj = []
             for i in crypto_list :
 
-                cryo = Crypto(id=i[0],name=i[1],price=i[2],how_many=i[3],when=i[4])
+                cryo = Crypto(id=i[0],crypto_id=i[1],price=i[2],how_many=i[3],when=i[4])
                 crypto_list_obj.append(cryo)
 
             return crypto_list_obj
-        except :
-            print("oops an error occurred in function get_all_crypto")
+        except sqlite3.Error as er:
+            print('SQLite error: %s' % (' '.join(er.args)))
+            print("Exception class is: ", er.__class__)
+            print('SQLite traceback: ')
+            exc_type, exc_value, exc_tb = sys.exc_info()
+            print(traceback.format_exception(exc_type, exc_value, exc_tb))
+
+    def get_all_crypto_full(self) -> List[Crypto_full]:
+        try :
+            crypto_list = self.connection.execute(
+                "SELECT crypto.crypto_symbol, crypto.crypto_label, crypto_track.crypto_price, crypto_track.crypto_many, crypto_track.crypto_when\
+                 FROM crypto, crypto_track\
+                 WHERE crypto.id = crypto_track.crypto_id")
+            crypto_list = crypto_list.fetchall()
+            crypto_list_obj = []
+            for i in crypto_list :
+                cryo = Crypto_full(symbol=i[0] ,crypto_name=i[1] ,price=i[2] ,how_many=i[3], when=i[4])
+                crypto_list_obj.append(cryo)
+
+            return crypto_list_obj
+        except sqlite3.Error as er:
+            print('SQLite error: %s' % (' '.join(er.args)))
+            print("Exception class is: ", er.__class__)
+            print('SQLite traceback: ')
+            exc_type, exc_value, exc_tb = sys.exc_info()
+            print(traceback.format_exception(exc_type, exc_value, exc_tb))
 
     def get_all_crypto_quote_by_name(self,name) -> List[Crypto_quote] :
         try :
@@ -83,6 +125,18 @@ class Database() :
         except :
             print("oops an error occurred in function get_all_crypto_by_name")
 
+    def get_all_crypto_symbol(self) -> List[str] :
+        try :
+            crypto_list = self.connection.execute("SELECT crypto_symbol FROM crypto")
+            crypto_list = crypto_list.fetchall()
+            list_obj = []
+
+            for i in crypto_list :
+                list_obj = chain(list_obj,list(i))
+            return list_obj
+        except :
+            print("oops an error occurred in function get_all_crypto_by_name")
+
     def get_all_crypto_price_by_name(self,name) -> List[str] :
         try :
             crypto_list = self.connection.execute("SELECT crypto_price FROM crypto_quote WHERE crypto_name='%s'" %name)
@@ -94,12 +148,16 @@ class Database() :
 
     def insert_crypto(self, crypto: Crypto) :
         try:
-            query = """INSERT INTO crypto_track(crypto_name, crypto_price, crypto_many) VALUES(?,?,?)"""
-            params = (crypto.name,crypto.price,crypto.how_many)
+            query = """INSERT INTO crypto_track(crypto_id, crypto_price, crypto_many, crypto_when) VALUES(?,?,?,?)"""
+            params = (crypto.crypto_id,crypto.price,crypto.how_many,crypto.when)
             self.connection.execute(query,params)
             self.connection.commit()
-        except :
-            print("oops an error occured in function insert_crypto")
+        except sqlite3.Error as er:
+            print('SQLite error: %s' % (' '.join(er.args)))
+            print("Exception class is: ", er.__class__)
+            print('SQLite traceback: ')
+            exc_type, exc_value, exc_tb = sys.exc_info()
+            print(traceback.format_exception(exc_type, exc_value, exc_tb))
 
     def insert_crypto_quote(self, crypto: Crypto_quote) :
         try:

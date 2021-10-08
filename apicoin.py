@@ -34,7 +34,9 @@ class ApiCoinMarkt() :
         try:
             response = session.get(self.url, params=parameters)
             data = json.loads(response.text)
-            filter_data = [x for x in data['data'] if x['symbol'] == 'ETH' or x['symbol'] == 'BTC' or x['symbol'] == 'BTC' or x['symbol'] == 'XRP']
+            list_crypto = self.db.get_all_crypto_symbol()
+            print(list_crypto)
+            filter_data = [x for x in data['data'] if x['symbol'] in list_crypto]
             for i in filter_data:
                 name = i['symbol']
                 price = i['quote']['EUR']['price']
