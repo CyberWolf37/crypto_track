@@ -1,0 +1,1 @@
+SELECT crypto.id, crypto_track.id crypto.crypto_symbol, crypto.crypto_label, crypto_track.crypto_price, crypto_track.crypto_many, crypto_track.crypto_when FROM crypto, crypto_track WHERE crypto.id = crypto_track.crypto_id

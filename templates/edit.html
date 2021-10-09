@@ -1,40 +1,27 @@
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
-    <title>crypto_track</title>
-    <meta name="icon+" content="<svg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;16&quot; height=&quot;16&quot; fill=&quot;currentColor&quot; class=&quot;bi bi-plus&quot; viewBox=&quot;0 0 16 16&quot;>   <path d=&quot;M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z&quot;/> </svg>">
-    <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css">
-    <link rel="stylesheet" href="assets/css/styles.css">
-</head>
-
-<body>
-    <div class="container">
-        <div class="row d-flex justify-content-center align-items-center">
-            <div class="col d-flex flex-column align-items-end">
-                <div class="d-flex justify-content-center align-items-center btn-edit" data-bss-hover-animate="tada" type="button"><span style="color: #100f0f;font-size: 18px;">Add / Edit</span></div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-12 d-flex flex-column justify-content-center align-items-center">
-                <form>
-                    <div class="dropdown" style="margin-top: 20px;"><button class="btn btn-primary dropdown-toggle" aria-expanded="false" data-bs-toggle="dropdown" type="button" style="font-family: Roboto;"><svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icon-tabler-coin" style="margin-right: 10px;">
-                                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                                <circle cx="12" cy="12" r="9"></circle>
-                                <path d="M14.8 9a2 2 0 0 0 -1.8 -1h-2a2 2 0 0 0 0 4h2a2 2 0 0 1 0 4h-2a2 2 0 0 1 -1.8 -1"></path>
-                                <path d="M12 6v2m0 8v2"></path>
-                            </svg>Sélectionner une crypto</button>
-                        <div class="dropdown-menu"><a class="dropdown-item" href="#">First Item</a><a class="dropdown-item" href="#">Second Item</a><a class="dropdown-item" href="#">Third Item</a></div>
-                    </div><input class="form-control input-qty" type="number" placeholder="Quantité"><input class="form-control input-qty" type="number" style="font-family: Roboto;border-style: solid;border-color: #1fc36c;" placeholder="Prix d'achat"><button class="btn btn-primary" type="submit" style="margin-top: 80px;font-family: Roboto;">Valider</button>
-                </form>
-            </div>
+{% extends 'base.html' %}
+{% block content %}
+<div class="container">
+    <div class="row d-flex justify-content-center align-items-center">
+        <div class="col d-flex flex-column align-items-end">
+            <div class="d-flex justify-content-center align-items-center btn-edit" data-bss-hover-animate="tada" type="button" onclick="window.location.href = '/'"><span style="color: #100f0f;font-size: 18px;">Add / Edit</span></div>
         </div>
     </div>
-    <script src="assets/bootstrap/js/bootstrap.min.js"></script>
-    <script src="assets/js/bs-init.js"></script>
-</body>
-
-</html>
+    <div class="row">
+        <div class="col-md-12 d-flex flex-column justify-content-center align-items-center">
+            <form action="edit" method="post">
+                <select name="cash" class="form-select" aria-label="Choix des cryptomonais" style="font-family: Roboto;border-style: solid;border-color: #1fc36c;background-color: #100f0f;color: #efefef;">
+                    <option selected>Sélectionner une monaie</span></option>
+                    {% if cryptomonais %}
+                    {% for crypto in cryptomonais %}
+                    <option value="{{ crypto.id }}">{{ crypto.symbol }}({{ crypto.name }})</option>
+                    {% endfor %}
+                    {% endif %}
+                </select>
+                <input name="quantity" class="form-control input-qty" type="number" placeholder="Quantité">
+                <input name="price" class="form-control input-qty" type="number" style="font-family: Roboto;border-style: solid;border-color: #1fc36c;" placeholder="Prix d'achat">
+                <button class="btn btn-primary" type="submit" style="margin-top: 80px;font-family: Roboto;">Valider</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

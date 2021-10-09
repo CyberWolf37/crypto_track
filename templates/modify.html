@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container">
+    <div class="row d-flex justify-content-center align-items-center">
+        <div class="col d-flex flex-column align-items-end">
+            <div class="d-flex justify-content-center align-items-center btn-edit" data-bss-hover-animate="tada" type="button" onclick="window.location.href = '/'"><span style="color: #100f0f;font-size: 18px;">Add / Edit</span></div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12 d-flex flex-column justify-content-center align-items-center">
+            <form action="" method="post">
+                <select name="id_crypto" class="form-select" aria-label="Choix des cryptomonais" style="font-family: Roboto;border-style: solid;border-color: #1fc36c;background-color: #100f0f;color: #efefef;">
+                    <option selected>Sélectionner une monaie</span></option>
+                    {% if cryptomonais %}
+                    {% for crypto in cryptomonais %}
+                    <option {% if crypto.id == currentcrypto.crypto_id %} selected {% endif %} value="{{ crypto.id }}">{{ crypto.symbol }}({{ crypto.name }})</option>
+                    {% endfor %}
+                    {% endif %}
+                </select>
+                <input name="quantity" class="form-control input-qty" type="number" placeholder="{{ currentcrypto.how_many }}" value="{{ currentcrypto.how_many }}">
+                <input name="price" class="form-control input-qty" type="number" style="font-family: Roboto;border-style: solid;border-color: #1fc36c;" placeholder="{{ currentcrypto.price }}" value="{{ currentcrypto.price }}">
+                <button class="btn btn-primary" type="submit" style="margin-top: 80px;font-family: Roboto;">Valider</button>
+            </form>
+            <button class="btn btn-primary" type="button" onclick="" style="margin-top: 80px;font-family: Roboto;">Voir graphique</button>
+            <button class="btn btn-primary" type="button" onclick="deleted({{ currentcrypto.id }})" style="margin-top: 80px;font-family: Roboto;">Supprimer</button>
+        </div>
+    </div>
+</div>
+<script>
+    function deleted(id) {
+        console.log(id)
+        fetch('/modify/'+id, {
+            method: 'DELETE',
+        })
+        .then(res => {
+            window.location.href='/'
+        })
+        .then(res => console.log(res)) 
+    }  
+</script>
+{% endblock %}

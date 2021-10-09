@@ -5,7 +5,7 @@
         <div class="col d-flex flex-column">
             <div class="row d-flex justify-content-center align-items-center">
                 <div class="col-12 d-flex justify-content-end">
-                    <div class="d-flex justify-content-center align-items-center cercle-add" data-bss-hover-animate="tada" type="button"><svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="currentColor" viewBox="0 0 16 16" class="bi bi-plus cercle-icon">
+                    <div class="d-flex justify-content-center align-items-center cercle-add" data-bss-hover-animate="tada" type="button" onclick="window.location.href = '/edit'"><svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="currentColor" viewBox="0 0 16 16" class="bi bi-plus cercle-icon">
                             <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z"></path>
                         </svg></div>
                 </div>
@@ -23,15 +23,15 @@
         <div class="col-md-12 d-flex flex-column justify-content-center align-items-center">
             {% if cryptos %}
             {% for crypto in cryptos %}
-            <div class="d-flex line-transaction" data-bss-hover-animate="pulse" type="button">
+            <div class="d-flex line-transaction" data-bss-hover-animate="pulse" type="button" onclick="window.location.href = '/modify/{{ crypto.id_crypto }}'">
                 <div class="col"><span>{{ crypto.symbol }}({{ crypto.name }})</span></div>
                 <div class="col d-flex justify-content-end align-items-center">
-                    {% if cryptos %}
+                    {% if crypto.price < crypto.last_price_quote %}
                     <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="currentColor" viewBox="0 0 16 16" class="bi bi-arrow-up-right .line-icon" style="color: #1fc36c;font-size: 24px;">
                     
                         <path fill-rule="evenodd" d="M14 2.5a.5.5 0 0 0-.5-.5h-6a.5.5 0 0 0 0 1h4.793L2.146 13.146a.5.5 0 0 0 .708.708L13 3.707V8.5a.5.5 0 0 0 1 0v-6z"></path>
                     </svg>
-                    {% else %}
+                    {% else  %}
                     <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="currentColor" viewBox="0 0 16 16" class="bi bi-arrow-down-right .line-icon" style="color: var(--bs-red);font-size: 24px;">
                         <path fill-rule="evenodd" d="M14 13.5a.5.5 0 0 1-.5.5h-6a.5.5 0 0 1 0-1h4.793L2.146 2.854a.5.5 0 1 1 .708-.708L13 12.293V7.5a.5.5 0 0 1 1 0v6z"></path>
                     </svg>
