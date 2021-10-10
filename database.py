@@ -237,12 +237,50 @@ class Database() :
             exc_type, exc_value, exc_tb = sys.exc_info()
             print(traceback.format_exception(exc_type, exc_value, exc_tb))
 
-    def get_last_price_by_symbol(self, symbol) :
+    def get_last_price_by_id(self, id) :
         try:
-            query = "SELECT crypto_price FROM crypto_quote WHERE crypto_name=\'%s\' ORDER BY crypto_when DESC LIMIT 1" %symbol
+            query = "SELECT crypto_price FROM crypto_quote WHERE crypto_id=\'%s\' ORDER BY crypto_when DESC LIMIT 1" %id
             list = self.connection.execute(query)
             price = list.fetchone()[0]
             return price
+
+        except sqlite3.Error as er:
+            print('SQLite error: %s' % (' '.join(er.args)))
+            print("Exception class is: ", er.__class__)
+            print('SQLite traceback: ')
+            exc_type, exc_value, exc_tb = sys.exc_info()
+            print(traceback.format_exception(exc_type, exc_value, exc_tb))
+
+    def get_all_price_by_id(self, id) -> List[str] :
+        try:
+            query = "SELECT crypto_price FROM crypto_quote WHERE crypto_id=\'%s\' ORDER BY crypto_when ASC" %id
+            list = self.connection.execute(query)
+            prices = list.fetchall()
+            list_obj = []
+
+            for price in prices :
+                list_obj.append(price[0])
+
+            return list_obj
+
+        except sqlite3.Error as er:
+            print('SQLite error: %s' % (' '.join(er.args)))
+            print("Exception class is: ", er.__class__)
+            print('SQLite traceback: ')
+            exc_type, exc_value, exc_tb = sys.exc_info()
+            print(traceback.format_exception(exc_type, exc_value, exc_tb))
+
+    def get_all_date_by_id(self, id) -> List[str] :
+        try:
+            query = "SELECT crypto_when FROM crypto_quote WHERE crypto_id=\'%s\' ORDER BY crypto_when ASC" %id
+            list = self.connection.execute(query)
+            dates = list.fetchall()
+            list_obj = []
+
+            for date in dates :
+                list_obj.append(date[0])
+
+            return list_obj
 
         except sqlite3.Error as er:
             print('SQLite error: %s' % (' '.join(er.args)))

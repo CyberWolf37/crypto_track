@@ -54,11 +54,14 @@ class ApiCoinMarkt() :
             except (ConnectionError, Timeout, TooManyRedirects) as e:
                 print(e)
 
-    def get_plot_by_name(self,name) :
-        fig = plt.figure(figsize = (18,8))
-        prices = self.db.get_all_crypto_price_by_name(name)
-        print(prices)
-        plt.plot(data=prices)
+    def get_plot_by_id(self,id) :
+
+        # get price by id and date
+        prices = self.db.get_all_price_by_id(id)
+        dates = self.db.get_all_date_by_id(id)
+
+        fig = plt.figure(figsize=(12,6))
+        plt.plot(dates,prices)
         html = mpld3.fig_to_html(fig)
         print(html)
         #print(prices)

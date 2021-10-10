@@ -12,7 +12,7 @@ def acceuil():
     db = Database()
     coin = api(db)
     coin.get_quote()
-    coin.get_plot_by_name(name='BTC')
+    #coin.get_plot_by_id(1)
     crypto_list = db.get_all_crypto_full()
     prices=[]
     for crypto in crypto_list :
