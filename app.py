@@ -38,7 +38,6 @@ def edit():
 
 @app.route("/modify/<id>", methods = ['GET', 'POST', 'DELETE'])
 def modify(id):
-    db = Database()
     #plot = coin.get_plot_by_id(id)
 
     if request.method == 'GET': 

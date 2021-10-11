@@ -20,7 +20,6 @@ class Crypto() :
         self.price = price
         self.how_many = how_many
         self.when = when
-        print(price,how_many)
         self.value = float(price) * float(how_many)
 
 class Crypto_full() :
@@ -111,6 +110,7 @@ class Database() :
             cryo = Crypto(id=i[0],crypto_id=i[1],price=i[2],how_many=i[3],when=i[4])
 
             return cryo
+
         except sqlite3.Error as er:
             print('SQLite error: %s' % (' '.join(er.args)))
             print("Exception class is: ", er.__class__)
@@ -326,7 +326,7 @@ class Database() :
             query = "SELECT crypto_when FROM crypto_quote ORDER BY crypto_when DESC LIMIT 1"
             list = self.connection.execute(query)
             date = list.fetchone()[0]
-            print(date)
+
             return date
 
         except sqlite3.Error as er:
