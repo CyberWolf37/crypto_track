@@ -20,6 +20,8 @@ class Crypto() :
         self.price = price
         self.how_many = how_many
         self.when = when
+        print(price,how_many)
+        self.value = float(price) * float(how_many)
 
 class Crypto_full() :
     def __init__(self ,id ,id_crypto ,symbol ,crypto_name ,price ,how_many, when, last_price_quote=None) :
@@ -31,10 +33,11 @@ class Crypto_full() :
         self.how_many = how_many
         self.when = when
         self.last_price_quote = last_price_quote
+        self.value = price * how_many
 
 class Crypto_quote() :
-    def __init__(self ,name, price, when) :
-        self.name = name
+    def __init__(self ,id, price, when) :
+        self.id = id
         self.price = price
         self.when = when
 
@@ -43,7 +46,7 @@ class Database() :
     def __init__(self) :
         # prepare connection
         path = os.environ.get("PATH_SQLITE_DB")
-        conn = sqlite3.connect(path)
+        conn = sqlite3.connect(path,check_same_thread=False)
         self.connection = conn
         
         # Init the table if does not exist
@@ -101,6 +104,20 @@ class Database() :
             exc_type, exc_value, exc_tb = sys.exc_info()
             print(traceback.format_exception(exc_type, exc_value, exc_tb))
 
+    def get_last_crypto(self) -> Crypto :
+        try :
+            crypto_list = self.connection.execute("SELECT * FROM crypto_track ORDER BY crypto_id DESC LIMIT 1")
+            i = crypto_list.fetchone()
+            cryo = Crypto(id=i[0],crypto_id=i[1],price=i[2],how_many=i[3],when=i[4])
+
+            return cryo
+        except sqlite3.Error as er:
+            print('SQLite error: %s' % (' '.join(er.args)))
+            print("Exception class is: ", er.__class__)
+            print('SQLite traceback: ')
+            exc_type, exc_value, exc_tb = sys.exc_info()
+            print(traceback.format_exception(exc_type, exc_value, exc_tb))
+
     def get_all_crypto_labels(self) -> List[Crypto_label] :
         try :
             crypto_list = self.connection.execute("SELECT * FROM crypto")
@@ -128,7 +145,7 @@ class Database() :
             crypto_list = crypto_list.fetchall()
             crypto_list_obj = []
             for i in crypto_list :
-                cryo = Crypto_full(id=i[0],id_crypto=i[1],symbol=i[2] ,crypto_name=i[3] ,price=i[4] ,how_many=i[5], when=i[6], last_price_quote=self.get_last_price_by_symbol(i[2]))
+                cryo = Crypto_full(id=i[0],id_crypto=i[1],symbol=i[2] ,crypto_name=i[3] ,price=i[4] ,how_many=i[5], when=i[6], last_price_quote=self.get_last_price_by_id(i[0]))
                 crypto_list_obj.append(cryo)
 
             return crypto_list_obj
@@ -185,6 +202,15 @@ class Database() :
         except :
             print("oops an error occurred in function get_all_crypto_by_name")
 
+    def get_id_by_symbol(self,symbol) :
+        try :
+            crypto_list = self.connection.execute("SELECT id  FROM crypto WHERE crypto_symbol='%s'" %symbol)
+            sym = crypto_list.fetchone()[0]
+
+            return sym
+        except :
+            print("oops an error occurred in function get_all_crypto_by_name")
+
     def get_all_crypto_price_by_name(self,name) -> List[str] :
         try :
             crypto_list = self.connection.execute("SELECT crypto_price FROM crypto_quote WHERE crypto_name='%s'" %name)
@@ -200,6 +226,7 @@ class Database() :
             params = (crypto.crypto_id,crypto.price,crypto.how_many,crypto.when)
             self.connection.execute(query,params)
             self.connection.commit()
+
         except sqlite3.Error as er:
             print('SQLite error: %s' % (' '.join(er.args)))
             print("Exception class is: ", er.__class__)
@@ -209,12 +236,17 @@ class Database() :
 
     def insert_crypto_quote(self, crypto: Crypto_quote) :
         try:
-            query = """INSERT INTO crypto_quote(crypto_name, crypto_price, crypto_when) VALUES(?,?,?)"""
-            params = (crypto.name,crypto.price,crypto.when)
+            query = """INSERT INTO crypto_quote(crypto_id, crypto_price, crypto_when) VALUES(?,?,?)"""
+            params = (crypto.id,crypto.price,crypto.when)
             self.connection.execute(query,params)
             self.connection.commit()
-        except:
-            print("oops an error occured in function insert_crypto_quote")
+
+        except sqlite3.Error as er:
+            print('SQLite error: %s' % (' '.join(er.args)))
+            print("Exception class is: ", er.__class__)
+            print('SQLite traceback: ')
+            exc_type, exc_value, exc_tb = sys.exc_info()
+            print(traceback.format_exception(exc_type, exc_value, exc_tb))
 
     def remove_crypto(self, id) :
         try:
@@ -294,6 +326,7 @@ class Database() :
             query = "SELECT crypto_when FROM crypto_quote ORDER BY crypto_when DESC LIMIT 1"
             list = self.connection.execute(query)
             date = list.fetchone()[0]
+            print(date)
             return date
 
         except sqlite3.Error as er:

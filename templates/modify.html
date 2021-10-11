@@ -8,6 +8,7 @@
     </div>
     <div class="row">
         <div class="col-md-12 d-flex flex-column justify-content-center align-items-center">
+            <span>{{ currentcrypto.value }} €&nbsp;</span><svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="currentColor" viewBox="0 0 16 16" class="bi bi-currency-euro .line-icon" style="color: #efefef;font-size: 24px;"></svg>
             <form action="" method="post">
                 <select name="id_crypto" class="form-select" aria-label="Choix des cryptomonais" style="font-family: Roboto;border-style: solid;border-color: #1fc36c;background-color: #100f0f;color: #efefef;">
                     <option selected>Sélectionner une monaie</span></option>
@@ -21,7 +22,10 @@
                 <input name="price" class="form-control input-qty" type="number" style="font-family: Roboto;border-style: solid;border-color: #1fc36c;" placeholder="{{ currentcrypto.price }}" value="{{ currentcrypto.price }}">
                 <button class="btn btn-primary" type="submit" style="margin-top: 80px;font-family: Roboto;">Valider</button>
             </form>
-            <button class="btn btn-primary" type="button" onclick="" style="margin-top: 80px;font-family: Roboto;">Voir graphique</button>
+            <!--<div style="background-color: #efefef;color: #efefef;">
+                {{ plot|safe }}
+            </div>
+            -->
             <button class="btn btn-primary" type="button" onclick="deleted({{ currentcrypto.id }})" style="margin-top: 80px;font-family: Roboto;">Supprimer</button>
         </div>
     </div>

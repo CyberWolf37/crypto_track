@@ -1,8 +1,9 @@
 import requests
 from database import Database, Crypto_quote
-from datetime import datetime
+from datetime import date, datetime, timedelta
 import pandas as pd
 import matplotlib.pyplot as plt
+import matplotlib.dates as mdates
 import mpld3
 import os 
 from  dotenv import load_dotenv
@@ -41,13 +42,11 @@ class ApiCoinMarkt() :
                 list_crypto = self.db.get_all_crypto_symbol()
                 filter_data = [x for x in data['data'] if x['symbol'] in list_crypto]
                 for i in filter_data:
-                    name = i['symbol']
+                    id = self.db.get_id_by_symbol(i['symbol'])
                     price = i['quote']['EUR']['price']
                     when = datetime.now()
 
-                    print(name +" "+price++" "+when)
-
-                    cryo = Crypto_quote(name=name,price=price,when=when)
+                    cryo = Crypto_quote(id=id,price=price,when=when)
                     self.db.insert_crypto_quote(cryo)
                 
                 
@@ -60,12 +59,15 @@ class ApiCoinMarkt() :
         prices = self.db.get_all_price_by_id(id)
         dates = self.db.get_all_date_by_id(id)
 
-        fig = plt.figure(figsize=(12,6))
-        plt.plot(dates,prices)
-        html = mpld3.fig_to_html(fig)
-        print(html)
-        #print(prices)
-        #plt.plot([3,1,4,1,5], 'ks-', mec='w', mew=5, ms=20)
-        #plot = plt.plot(prices,ylabel='Prix',xlabel='Date')
+        now = datetime.strptime(dates[0],'%Y-%m-%d %H:%M:%S.%f')
+        then = now + timedelta(days=2)
+        days = mdates.drange(now,then,delta=timedelta(days=1))
 
-        #return plot
+        plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%Y-%m-%d'))
+        plt.gca().xaxis.set_major_locator(mdates.DayLocator(interval=5))
+
+        fig = plt.figure(figsize=(4,2))
+        plt.plot(days,prices)
+        plt.gcf().autofmt_xdate()
+        html = mpld3.fig_to_html(fig)
+        return html
