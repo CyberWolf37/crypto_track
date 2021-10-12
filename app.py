@@ -38,12 +38,13 @@ def edit():
 
 @app.route("/modify/<id>", methods = ['GET', 'POST', 'DELETE'])
 def modify(id):
-    #plot = coin.get_plot_by_id(id)
+    
 
     if request.method == 'GET': 
         crypto_list = db.get_all_crypto_labels()
         crypto = db.get_crypto_by_id(id)
-        return render_template('modify.html', cryptomonais=crypto_list, currentcrypto=crypto)
+        plot = coin.get_plot_by_id(crypto.crypto_id)
+        return render_template('modify.html', cryptomonais=crypto_list, currentcrypto=crypto, plot=plot)
 
     if request.method == 'POST':
         form = request.form

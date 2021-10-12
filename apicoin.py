@@ -2,6 +2,7 @@ import requests
 from database import Database, Crypto_quote
 from datetime import date, datetime, timedelta
 import pandas as pd
+import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
 import mpld3
@@ -56,18 +57,24 @@ class ApiCoinMarkt() :
     def get_plot_by_id(self,id) :
 
         # get price by id and date
+        print('id =',id)
         prices = self.db.get_all_price_by_id(id)
         dates = self.db.get_all_date_by_id(id)
-
-        now = datetime.strptime(dates[0],'%Y-%m-%d %H:%M:%S.%f')
-        then = now + timedelta(days=2)
-        days = mdates.drange(now,then,delta=timedelta(days=1))
-
-        plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%Y-%m-%d'))
-        plt.gca().xaxis.set_major_locator(mdates.DayLocator(interval=5))
+        print(dates)
+        dates = [datetime.strptime(i,'%Y-%m-%d %H:%M:%S.%f') for i in dates]
+        cryo = self.db.get_crypto_by_id(id)
 
         fig = plt.figure(figsize=(4,2))
-        plt.plot(days,prices)
+        plt.plot_date(dates,prices,label='prix du marché',c='b')
+        plt.plot()
+        plt.legend()
+        plt.xlim(dates)
+        plt.axhline(y=4,c='g',label='Prix acheté')
+        plt.ylabel('Price')
+        plt.xlabel('dates')
+        plt.legend()
         plt.gcf().autofmt_xdate()
+        myFmt = mdates.DateFormatter('%Y-%m-%d %H:%M:%S.%f')
+        plt.gca().xaxis.set_major_formatter(myFmt)
         html = mpld3.fig_to_html(fig)
         return html
