@@ -58,18 +58,19 @@ class ApiCoinMarkt() :
 
         # get price by id and date
         print('id =',id)
-        prices = self.db.get_all_price_by_id(id)
-        dates = self.db.get_all_date_by_id(id)
-        print(dates)
-        dates = [datetime.strptime(i,'%Y-%m-%d %H:%M:%S.%f') for i in dates]
         cryo = self.db.get_crypto_by_id(id)
+        prices = self.db.get_all_price_by_id(cryo.crypto_id)
+        dates = self.db.get_all_date_by_id(cryo.crypto_id)
+        print(dates)
+        print(prices)
+        dates = [datetime.strptime(i,'%Y-%m-%d %H:%M:%S.%f') for i in dates]
 
         fig = plt.figure(figsize=(4,2))
         plt.plot_date(dates,prices,label='prix du marché',c='b')
         plt.plot()
         plt.legend()
-        plt.xlim(dates)
-        plt.axhline(y=4,c='g',label='Prix acheté')
+        #plt.xlim(dates)
+        plt.axhline(cryo.price,c='g',label='Prix acheté')
         plt.ylabel('Price')
         plt.xlabel('dates')
         plt.legend()
